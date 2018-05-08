@@ -10,6 +10,7 @@ module register_module
         input [BITS-'d1:0]      d [NUM-'d1:0],
 		output [BITS-'d1:0]     q [NUM-'d1:0] 
     );
+	 genvar i;
     generate begin: U_reg
         for(i=0;i<NUM;i=i+'d1) begin: reg_gen
                 reg_en_BITS #(BITS) 
@@ -17,8 +18,8 @@ module register_module
                     clk, 
                     reset_n, 
                     en[i], 
-                    coeff, 
-                    r_coeff[i]
+                    d[i], 
+                    q[i]
                 );
             end
         end
@@ -30,7 +31,9 @@ module reg_en_BITS
 		parameter BITS = 'd4
 	)
 	(
-		input clk, reset_n, en
+		input clk, 
+		input reset_n, 
+		input en,
 		input [BITS-'d1:0] d,
 		output [BITS-'d1:0] q
 	);

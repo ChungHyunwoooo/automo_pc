@@ -13,7 +13,7 @@
 
 `ifndef SRC_INC_FULLADDER
 `define SRC_INC_FULLADDER
-`include "../src/fulladder.sv"
+`include "../../src/fulladder.sv"
 `endif
 
 module rca_nbits

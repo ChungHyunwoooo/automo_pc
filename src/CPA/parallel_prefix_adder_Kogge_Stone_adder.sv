@@ -2,7 +2,7 @@
 
 `ifndef PARALLEL_PREFIX_ADDER_CELL
 `define PARALLEL_PREFIX_ADDER_CELL
-`include "../src/parallel_prefix_adder_cell.sv"
+`include "../CPA/parallel_prefix_adder_cell.sv"
 `endif
 
 // Support bitwidth: 1~128 bits
