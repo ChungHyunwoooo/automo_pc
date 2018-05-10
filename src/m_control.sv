@@ -7,7 +7,7 @@ module m_control
 		input clk, 
 		input logic reset_n,
 		input start, fin,
-		output logic wen, cal,
+		output logic cal,
 		output logic [$clog2(CGES)-'d1:0] addr
 		
 	);
@@ -32,11 +32,7 @@ module m_control
 	
 	always @(state, s_counter, counter, start, fin) begin
 		case(state)
-		INIT: 						n_state = SAVE;
-		SAVE: begin 
-			if(CGES > s_counter)	n_state = SAVE;
-			else 						n_state = WAIT;
-		end
+		INIT: 						n_state = WAIT;
 		WAIT:begin
 			if(start == 1'b0) 	n_state = WAIT;
 			else 						n_state = CALC;
@@ -58,26 +54,17 @@ module m_control
 	always @(posedge clk) begin
 		case(state)
 		INIT: begin
-			wen = 1'b0;
 			cal = 1'b0;
-		end
-		SAVE: begin
-			wen = 1'b1;
-			cal = 1'b0;
-			s_counter = s_counter + {{($clog2(CGES)-1){1'd0}},1'd1};
 		end
 		WAIT: begin
 			s_counter = {$clog2(CGES){1'd0}};
 			counter = 16'd0;
-			wen = 1'b0;
 			cal = 1'b0;
 		end
 		CALC: begin
-			wen = 1'b0;
 			cal = 1'b1;
 		end
 		FCAL: begin
-			wen = 1'b0;
 			cal = 1'b0;
 			counter = counter + 16'd1;
 		end

@@ -10,6 +10,7 @@
 //SRC_INC_PPA_KS - Kogge - Stone adder
 //SRC_INC_PPA_LF - Lander - Fisher adder
 //Default - operation +
+`define SRC_INC_PPA_LF
 
 
 module TOP
@@ -36,13 +37,13 @@ module TOP
 	
 	logic [MAX-'d1:0] 	coeff 	[CGES-'d1:0];
 	logic [CGES-'d2:0] cges;
+	logic [MAX-'d1:0] cpa_result;
 	
 	prestep_module#(BITS,CGES,MAX)
 	 U0_prestep
     (   
         .clk(CLK),
-		  .reset_n(reset_n),
-        .wen(wen),
+		.reset_n(reset_n),
         .cges(cges),
         .coeff(coeff)
 
@@ -64,24 +65,34 @@ module TOP
 	 U2_CPA
     (
         vs,
-		  vc, 
-		  result
+		vc, 
+		cpa_result
     );
-	 
+	reg_en_BITS #(MAX) 
+	U3_REG_CPA 
+	(
+		CLK, 
+		reset_n, 
+		cal, 
+		cpa_result, 
+		result
+	); 
 	 	
 	
 	m_control #(CGES)
-	U3_main_control
+	U0_main_control
 	(
 		CLK,  
 		reset_n,
 		start, fin,
-		wen, cal,
+		cal,
 		addr
 		
 	);
+	
+	
 	temp_target_IP#(CGES)
-	U4_targetIP
+	U0_targetIP
 	(
 		CLK, 
 		reset_n,

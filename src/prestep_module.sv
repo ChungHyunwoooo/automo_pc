@@ -7,8 +7,8 @@
 //  Last Updated    : 2018. 04. 29
 //----------------------------------------------------------------------------------------------------------------------------
 
-`ifndef REG_WEN_MODULE
-`define REG_WEN_MODULE
+`ifndef REG__MODULE
+`define REG__MODULE
 `include "../src/register_module.sv"
 `endif
 
@@ -23,7 +23,6 @@ module prestep_module
     )   
     (   
         input logic clk, reset_n,
-        input logic wen,
         input logic [CGES-'d1:1] cges,
         output logic [MAX-'d1:0] coeff [CGES-'d1:0]
 

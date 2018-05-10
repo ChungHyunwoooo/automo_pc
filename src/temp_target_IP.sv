@@ -6,12 +6,17 @@ module temp_target_IP
         input clk, reset_n,
         output logic [CGES-'d2:0] cges
     );
-    integer seed;
+    
+    logic [CGES-'d2:0] counter;
     always @(posedge clk) begin
      //$srandom(seed);
-    
+        
 		if(reset_n == 1)
-			cges <= {CGES-1{1'b1}};
+			counter = 0;
+      else begin 
+			cges <= {counter};
+			counter = counter + 'b1;
+		end
 	end	
     
 endmodule

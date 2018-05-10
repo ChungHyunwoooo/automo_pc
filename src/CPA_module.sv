@@ -12,7 +12,7 @@
 //SRC_INC_PPA_KS - Kogge - Stone adder
 //SRC_INC_PPA_LF - Lander - Fisher adder
 //Default - operation +
-`define SRC_INC_PPA_LF
+
 `ifdef  SRC_INC_RCA
 	`include "../CPA/rca_nbits.sv"
 `elsif  SRC_INC_PPA_KS
@@ -65,7 +65,7 @@ module CPA_module
 
 `else
     //default option
-    assign result = a + b;
+    assign pv_prime = a + b;
 `endif
 endmodule
 
