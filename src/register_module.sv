@@ -1,4 +1,4 @@
-module register_module
+module coefficient_register
     #(
         parameter BITS = 'd32,
         parameter NUM = 'd7
@@ -6,24 +6,14 @@ module register_module
     (
         input                   clk,
         input                   reset_n,
-        input [NUM-'d1:0]       en,
-        input [BITS-'d1:0]      d [NUM-'d1:0],
 		output [BITS-'d1:0]     q [NUM-'d1:0] 
     );
-	 genvar i;
-    generate begin: U_reg
-        for(i=0;i<NUM;i=i+'d1) begin: reg_gen
-                reg_en_BITS #(BITS) 
-                U0_reg (
-                    clk, 
-                    reset_n, 
-                    en[i], 
-                    d[i], 
-                    q[i]
-                );
-            end
-        end
-    endgenerate
+    logic [BITS-'d1:0] coeff [NUM-'d1:0];
+    initial begin
+        $readmemb("C:/Users/resio/Desktop/18ver/init.mem", coeff);
+    end
+	 assign q = coeff;
+    
 endmodule
 
 module reg_en_BITS
@@ -34,15 +24,17 @@ module reg_en_BITS
 		input clk, 
 		input reset_n, 
 		input en,
-		input [BITS-'d1:0] d,
-		output [BITS-'d1:0] q
+		input logic [BITS-'d1:0] d,
+		output logic [BITS-'d1:0] q
 	);
 		
     always @(posedge clk) begin
 		if(reset_n == 1)
-			q <= {(BITS){1'b0}};
+			q <= {BITS{1'b0}};
 		else if(en == 1)
 			q <= d;
+		else
+		  q<={BITS{1'bz}};
 	end	
 	
 endmodule

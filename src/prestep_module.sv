@@ -12,9 +12,8 @@
 `include "../src/register_module.sv"
 `endif
 
-`include "../src/prestep/decode_module.sv"
-`include "../src/prestep/multi_andgate.sv"
-`include "../src/prestep/sign_extend.sv"
+`include "../src/multi_andgate.sv"
+`include "../src/sign_extend.sv"
 
 module prestep_module
     #(
@@ -25,34 +24,26 @@ module prestep_module
     (   
         input logic clk, reset_n,
         input logic wen,
-        input logic [$clog2(CGES)-'d1:0] addr,
-        input logic [CGES-'d1:0] cges,
-        input logic [BITS-'d1:0] value,
-        output logic [BITS-'d1:0] coeff [MAX-'d1:0],
+        input logic [CGES-'d1:1] cges,
+        output logic [MAX-'d1:0] coeff [CGES-'d1:0]
 
     );
 
-    logic [CGES-d'1:0]  w_wen;
     logic [BITS-'d1:0]  r_coeff [CGES-'d1:0];
     logic [BITS-'d1:0]  a_coeff [CGES-'d1:0];
 
-    genvar i;
-
-//decoder
-    decode_en #(CGES) U0_decode_en(wen, addr, w_wen); // wirte enable decode
+	genvar i;
 
 //register
-    register_module #(BITS, CGES) 
+    coefficient_register #(BITS, CGES) 
         U1_reg (
             clk, 
-            reset_n, 
-            w_wen[i], 
-            value,
-            r_coeff[i]
+            reset_n,
+            r_coeff
         );
 //multi-andgate
     assign a_coeff[0] = r_coeff[0];
-    generate begin: U2_multi_and
+    generate 
 		for(i=1;i<CGES;i=i+'d1) begin: and_coeff
 			multi_andgate #(BITS) 
             U2_multi (
@@ -64,7 +55,7 @@ module prestep_module
     endgenerate
 
 //signextend
-    generate U3_sign_ex
+    generate 
         for(i=0;i<CGES;i++) begin:U3_sign_extend
             sign_extend #(BITS, MAX) 
             U3_ext(

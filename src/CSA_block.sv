@@ -1,6 +1,6 @@
 `ifndef SRC_INC_FULLADDER
 `define SRC_INC_FULLADDER
-`include "../../src/fulladder.sv"
+`include "../src/fulladder.sv"
 `endif
 
 module tree_2_2 
@@ -52,7 +52,7 @@ module tree_4_2
 		for(i=0;i<MAX;i=i+'d1) begin:level1
 			if(i==0) 	adder_4_2_cinout U0({in[0][i], in[1][i], in[2][i], in[3][i]}, 1'b0, s[i], c[i], cout[i]);
 			else if(i == MAX-'d1)
-						adder_4_2_cinout U0({in[0][i], in[1][i], in[2][i], in[3][i]}, cout[i-1], s[i], c[i], 1'b0);
+						adder_4_2_cinout U0({in[0][i], in[1][i], in[2][i], in[3][i]}, cout[i-1], s[i], c[i]);
 			else 		adder_4_2_cinout U1({in[0][i], in[1][i], in[2][i], in[3][i]}, cout[i-1], s[i], c[i], cout[i]);
 		end	
 	endgenerate 
@@ -76,6 +76,38 @@ module tree_5_3
 		for(i=0;i<MAX;i=i+'d1) begin:level1
 			adder_5_3 U1(
 			{in[0][i], in[1][i], in[2][i], in[3][i], in[4][i]}, lv1[i][2:0]);
+		end
+		////////////////////////level 2
+		for(i='d3;i<MAX;i=i+'d1) begin:lv2
+			if(i!= MAX-'d1) fulladder U2(lv1[i-2][2], lv1[i-1][1], lv1[i][0], s[i], c[i+1]);
+			else fulladder U2(lv1[i-2][2], lv1[i-1][1], lv1[i][0], s[i], w_c);
+			//w_c is not used
+		end
+		halfadder U2_0(lv1[0][2], lv1[1][1], s[2], c[3]);
+		//halfadder U2_1(lv1[MAX-'d4][1], lv1[MAX-'d5][2], s[MAX-'d3], c[MAX-'d3]);
+		assign s[1:0] = {lv1[0][1] ,lv1[0][0]};
+		assign c[2:1] = {lv1[2][0], lv1[1][0]};
+		assign c[0] = 1'b0;
+		//assign s[MAX-'d2] = lv1[MAX-'d4][2];	
+	endgenerate 
+	
+endmodule
+module tree_6_3
+	#(
+		parameter MAX = 'd6
+	)
+	(
+		input logic [MAX-'d1:0] in [5:0],
+		output logic [MAX-'d1:0] s,
+		output logic [MAX-'d1:0] c
+	);
+	logic [2:0] lv1 [MAX-'d1:0];
+	logic w_c;
+  genvar i;
+	generate
+		for(i=0;i<MAX;i=i+'d1) begin:level1
+			adder_6_3 U1(
+			{in[0][i], in[1][i], in[2][i], in[3][i], in[4][i], in[5][i]}, lv1[i][2:0]);
 		end
 		////////////////////////level 2
 		for(i='d3;i<MAX;i=i+'d1) begin:lv2
@@ -208,6 +240,22 @@ module adder_5_3
 	fulladder U0(in[0], in[1], in[2], w[0], w[1]);
 	fulladder U1(in[3], in[4], w[0], out[0], w[2]);
 	halfadder U2(w[1], w[2], out[1], out[2]);
+	
+endmodule
+module adder_6_3
+	(
+		input logic [5:0] in,
+		output logic [2:0] out
+	);
+	logic [3:0] w_1;
+	logic w_2;
+	//w_1[0] U0 sum
+	//w_1[1] U0 carry
+	//w_1[2] U1 carry
+	fulladder U0(in[0], in[1], in[2], w_1[0], w_1[1]);
+	fulladder U1(in[3], in[4], in[5], w_1[2], w_1[3]);
+	halfadder U2(w_1[0],w_1[1], out[0], w_2);
+	fulladder U3(w_1[1], w_1[3], w_2, out[1], out[2]);
 	
 endmodule
 

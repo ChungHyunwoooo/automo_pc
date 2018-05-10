@@ -12,19 +12,17 @@
 //SRC_INC_PPA_KS - Kogge - Stone adder
 //SRC_INC_PPA_LF - Lander - Fisher adder
 //Default - operation +
-
-`define SRC_INC_PPA_LF //option
-
+`define SRC_INC_PPA_LF
 `ifdef  SRC_INC_RCA
 	`include "../CPA/rca_nbits.sv"
 `elsif  SRC_INC_PPA_KS
 	`include "../CPA/parallel_prefix_adder_Kogge_Stone_adder.sv"
 `elsif SRC_INC_PPA_LF
-	`include "../CPA/parallel_prefix_adder_Ladner_Fisher_adder.sv"
+	`include "../src/parallel_prefix_adder_Ladner_Fisher_adder.sv"
 `endif
 module CPA_module
     #(
-        parameter BITS = 'd32
+        parameter BITS = 'd40
     )
     (
         input logic     [BITS-'d1:0] a,
@@ -62,7 +60,8 @@ module CPA_module
 `elsif SRC_INC_PPA_LF
     
     parallel_prefix_adder_Ladner_Fisher_adder
-    #(BITS) U_CPA (.a(a), .b(b), .ci(1'b0), .s(pv_prime), .co(1'b0));	
+    //#(BITS) U_CPA (.a(a), .b(b), .ci(1'b0), .s(pv_prime), .co(1'b0));	
+    #(BITS) U_CPA (.a(a), .b(b), .ci(1'b0), .s(pv_prime));	
 
 `else
     //default option
