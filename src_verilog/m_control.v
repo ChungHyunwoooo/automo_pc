@@ -5,9 +5,9 @@ module m_control
 	)
 	(
 		input clk, 
-		input logic reset_n,
+		input reset_n,
 		input start, fin,
-		output logic cal		
+		output reg cal		
 	);
 	
 	localparam INIT = 3'b000;
@@ -17,14 +17,14 @@ module m_control
 	localparam FCAL = 3'b100;
 	
 	
-	logic [2:0]state;
-	logic [2:0]n_state;
+	reg [2:0]state;
+	reg [2:0]n_state;
 	
-	logic [$clog2(CGES)-'d1:0] s_counter = 0;
-	shortint counter = 0;
+	reg [$clog2(CGES)-'d1:0] s_counter = 0;
+	integer counter = 0;
 	
 	always @(posedge clk) begin
-		if(reset_n) 				state = INIT;
+		if(reset_n == 0) 				state = INIT;
 		else							state = n_state;
 	end
 	

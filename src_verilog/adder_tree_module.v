@@ -1,12 +1,3 @@
-`ifndef REG__MODULE
-`define REG__MODULE
-`include "../src/register_module.sv"
-`endif
-
-`include "../src/CSA_auto.sv"
-`include "../src/multi_andgate.sv"
-`include "../src/sign_extend.sv"
-
 module adder_tree_module
     #(
         parameter 				BITS  = 	'd32,
@@ -47,55 +38,72 @@ module adder_tree_module
 
 
 
-    logic [MAX*level1_r-'d1:0] w_CSA_1;
-    logic [MAX*level2_r-'d1:0] w_CSA_2;
-    logic [MAX*level3_r-'d1:0] w_CSA_3;
-    logic [MAX*level4_r-'d1:0] w_CSA_4;
-    logic [MAX*level5_r-'d1:0] w_CSA_5;
-    logic [MAX*level5_r-'d1:0] w_CSA_6;
-    logic [MAX*level5_r-'d1:0] w_CSA_7;
-	logic [MAX*level5_r-'d1:0] w_CSA_8;
-    logic [MAX*level5_r-'d1:0] w_CSA_9;
+    wire [MAX*level1_r-'d1:0] w_CSA_1;
+    wire [MAX*level2_r-'d1:0] w_CSA_2;
+    wire [MAX*level3_r-'d1:0] w_CSA_3;
+    wire [MAX*level4_r-'d1:0] w_CSA_4;
+    wire [MAX*level5_r-'d1:0] w_CSA_5;
+    wire [MAX*level6_r-'d1:0] w_CSA_6;
+    wire [MAX*level7_r-'d1:0] w_CSA_7;
+	 wire [MAX*level8_r-'d1:0] w_CSA_8;
+    wire [MAX*level9_r-'d1:0] w_CSA_9;
 	 
-    logic [MAX*level1_r-'d1:0] w_reg_1;
-    logic [MAX*level2_r-'d1:0] w_reg_2;
-    logic [MAX*level3_r-'d1:0] w_reg_3;
-    logic [MAX*level4_r-'d1:0] w_reg_4;
-    logic [MAX*level5_r-'d1:0] w_reg_5;
-    logic [MAX*level2_r-'d1:0] w_reg_6;
-    logic [MAX*level3_r-'d1:0] w_reg_7;
-    logic [MAX*level4_r-'d1:0] w_reg_8;
-    logic [MAX*level5_r-'d1:0] w_reg_9;
+    wire [MAX*level1_r-'d1:0] w_reg_1;
+    wire [MAX*level2_r-'d1:0] w_reg_2;
+    wire [MAX*level3_r-'d1:0] w_reg_3;
+    wire [MAX*level4_r-'d1:0] w_reg_4;
+    wire [MAX*level5_r-'d1:0] w_reg_5;
+    wire [MAX*level6_r-'d1:0] w_reg_6;
+    wire [MAX*level7_r-'d1:0] w_reg_7;
+    wire [MAX*level8_r-'d1:0] w_reg_8;
+    wire [MAX*level9_r-'d1:0] w_reg_9;
     
-    logic [BITS-'d1:0] mem_coeff [CGES-'d1:0];
-    logic [BITS-'d1:0]  r_coeff [CGES-'d1:0];
-    logic [BITS-'d1:0]  a_coeff [CGES-'d1:0];
-    logic [MAX*CGES-'d1:0] coeff;
+    reg [BITS-'d1:0] mem_coeff [CGES-'d1:0];
+    wire [BITS-'d1:0]  r_coeff [CGES-'d1:0];
+    wire [BITS-'d1:0]  a_coeff [CGES-'d1:0];
+    wire [MAX*CGES-'d1:0] coeff;
     
-    integer j, initi = 32'hFFFFFFFF;
     //register set
     initial begin
-        $readmemb("D:/OneDrive - kw.ac.kr/0. Git/automo_pc/src/init.mem", mem_coeff);
+        //$readmemb("D:/OneDrive - kw.ac.kr/0. Git/automo_pc/src/init.mem", mem_coeff);
         /*
         for(j=0;j<CGES;j=j+1) begin
             mem_coeff[j] <= initi;
         end
         */
+		mem_coeff[0] = 32'b00000000000001000101010000110100;
+        mem_coeff[1] = 32'b00000000000000001000110010110100;
+        mem_coeff[2] = 32'b00000000000000001100011010000100;
+        mem_coeff[3] = 32'b11111111111111010011010111110000;
+        mem_coeff[4] = 32'b00000000000000010110111001000000;
+        mem_coeff[5] = 32'b00000000000000011000100011111000;
+        mem_coeff[6] = 32'b00000000000001001001100000101100;
+        mem_coeff[7] = 32'b00000000000000000001000011010100;
+        mem_coeff[8] = 32'b00000000000000010011100100101010;
+        mem_coeff[9] = 32'b00000000000000000000011101110010;
+        mem_coeff[10] = 32'b00000000000000000101110100100000;
+        mem_coeff[11] = 32'b11111111111111111011111101111000;
+        mem_coeff[12] = 32'b11111111111111101011100001000100;
     end
     
-
-	
+	 
+		assign a_coeff[0] = mem_coeff[0];
     
     //multi-andgate
-    assign a_coeff[0] = mem_coeff[0];
+    genvar j;
     generate 
 		for(i=1;i<CGES;i=i+'d1) begin: and_coeff
-			multi_andgate #(BITS) 
+        /*
+            multi_andgate #(BITS) 
             U2_multi (
                 mem_coeff[i], 
                 cges[i], 
                 a_coeff[i]
             );
+        */
+            for(j=0;j<BITS;j=j+1) begin: loop
+                assign a_coeff[i][j] = mem_coeff[i][j] & cges[i];
+            end
 		end
     endgenerate
 

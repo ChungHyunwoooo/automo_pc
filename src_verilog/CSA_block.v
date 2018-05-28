@@ -1,16 +1,11 @@
-`ifndef SRC_INC_FULLADDER
-`define SRC_INC_FULLADDER
-`include "../src/fulladder.sv"
-`endif
-
 module tree_2_2 
 	#(
 		parameter MAX = 'd7
 	)
 	(
-		input logic [MAX*2-'d1:0] in,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input  [MAX*2-'d1:0] in,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
 	assign s = in[MAX-'d1:0];
 	assign c = in[MAX*2-'d1+:MAX];
@@ -21,9 +16,9 @@ module tree_3_2
 		parameter MAX = 'd7
 	)
 	(
-		input logic [MAX*3-'d1:0] in ,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input  [MAX*3-'d1:0] in ,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
 	genvar i;
 	generate
@@ -41,12 +36,12 @@ module tree_4_2
 		parameter MAX = 'd32
 	)
 	(
-		input logic [MAX*4-'d1:0] in,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input  [MAX*4-'d1:0] in,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
 
-	logic [MAX-'d2:0] cout ;
+	wire [MAX-'d2:0] cout ;
 	
 	genvar i;
 	
@@ -66,13 +61,13 @@ module tree_5_3
 		parameter MAX = 'd5
 	)
 	(
-		input logic [MAX*5-'d1:0] in,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input  [MAX*5-'d1:0] in,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
 
-	logic [2:0] lv1 [MAX-'d1:0];
-	logic w_c;
+	wire [2:0] lv1 [MAX-'d1:0];
+	wire w_c;
 	genvar i;
 	generate
 		for(i=0;i<MAX;i=i+'d1) begin:level1
@@ -99,12 +94,12 @@ module tree_6_3
 		parameter MAX = 'd6
 	)
 	(
-		input logic [MAX*6-'d1:0] in ,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input  [MAX*6-'d1:0] in ,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
-	logic [2:0] lv1 [MAX-'d1:0];
-	logic w_c;
+	wire [2:0] lv1 [MAX-'d1:0];
+	wire w_c;
   genvar i;
 	generate
 		for(i=0;i<MAX;i=i+'d1) begin:level1
@@ -133,12 +128,12 @@ module tree_7_3
 		parameter MAX = 'd7
 	)
 	(
-		input logic [MAX*7-'d1:0] in,
-		output logic [MAX-'d1:0] s,
-		output logic [MAX-'d1:0] c
+		input [MAX*7-'d1:0] in,
+		output [MAX-'d1:0] s,
+		output [MAX-'d1:0] c
 	);
-	logic [2:0] lv1 [MAX-'d1:0];
-	logic w_c;
+	wire [2:0] lv1 [MAX-'d1:0];
+	wire w_c;
 	genvar i;
 	generate
 		for(i=0;i<MAX;i=i+'d1) begin:level1
@@ -156,11 +151,14 @@ module tree_7_3
 		end
 		halfadder U2_0(lv1[0][2], lv1[1][1], s[2], c[3]);
 		//halfadder U2_1(lv1[MAX-'d4][1], lv1[MAX-'d5][2], s[MAX-'d3], c[MAX-'d3]);
-		assign s[1:0] = {lv1[0][1] ,lv1[0][0]};
-		assign c[2:1] = {lv1[2][0], lv1[1][0]};
+		assign	s[1:0] = {lv1[0][1] ,lv1[0][0]};
+		assign	c[2:1] = {lv1[2][0], lv1[1][0]};
 		//assign s[MAX-'d2] = lv1[MAX-'d4][2];
-		assign c[0] = 1'b0;
+		assign	c[0] = 1'b0;	
 	endgenerate
+	
+	
+	
 	
 endmodule
 
@@ -171,9 +169,9 @@ endmodule
 
 module adder_3_2
 	(
-		input logic [2:0]in,
-		output logic s,
-		output logic c
+		input [2:0]in,
+		output s,
+		output c
 	);
 
 	fulladder U0_0(in[0], in[1], in[2], s, c);
@@ -181,13 +179,13 @@ module adder_3_2
 endmodule
 module adder_4_2_cinout
 	(
-		input logic [3:0] in,
-		input logic cin,
-		output logic s,
-		output logic c,
-		output logic cout
+		input  [3:0] in,
+		input  cin,
+		output s,
+		output c,
+		output cout
 	);
-	logic w_s;
+	wire w_s;
 	fulladder U0(in[0], in[1], in[2], w_s, cout);
 	fulladder U1(in[3], w_s, cin, s, c);
 	
@@ -195,13 +193,13 @@ endmodule
 
 module adder_5_2_cinout
 	(
-		input logic [4:0] in,
-		input logic [1:0] cin,
-		output logic s,
-		output logic c,
-		output logic [1:0] cout
+		input  [4:0] in,
+		input  [1:0] cin,
+		output s,
+		output c,
+		output [1:0] cout
 	);
-	logic [1:0] w_s;
+	wire [1:0] w_s;
 	fulladder U0(in[0], in[1], in[2], w_s[0], cout[0]);
 	fulladder U1(in[3], w_s[0], cin[0], w_s[1], cout[1]);
 	fulladder U2(in[4], w_s[1], cin[1], s, c);
@@ -210,10 +208,10 @@ endmodule
 
 module adder_5_3
 	(
-		input logic [4:0] in,
-		output logic [2:0] out
+		input  [4:0] in,
+		output [2:0] out
 	);
-	logic [2:0] w; 
+	wire [2:0] w; 
 	//w[0] U0 sum
 	//w[1] U0 carry
 	//w[2] U1 carry
@@ -224,11 +222,11 @@ module adder_5_3
 endmodule
 module adder_6_3
 	(
-		input logic [5:0] in,
-		output logic [2:0] out
+		input  [5:0] in,
+		output [2:0] out
 	);
-	logic [3:0] w_1;
-	logic w_2;
+	wire [3:0] w_1;
+	wire w_2;
 	//w_1[0] U0 sum
 	//w_1[1] U0 carry
 	//w_1[2] U1 carry
@@ -241,12 +239,12 @@ endmodule
 
 module adder_7_3
 	(
-		input logic [6:0]in,
-		output logic [2:0] out
+		input  [6:0]in,
+		output [2:0] out
 	);
 
-	logic [1:0] w_s;
-	logic [2:0] w_c;
+	wire [1:0] w_s;
+	wire [2:0] w_c;
 
 `ifdef CSA_LINEAR_TREE
 	fulladder U0(in[0], in[1], in[2], w_s[0], w_c[0]);
@@ -271,15 +269,15 @@ endmodule
 
 module adder_8_4
 	(
-		input logic [7:0]in,
-		output logic [3:0] out
+		input  [7:0]in,
+		output [3:0] out
 	);
 
-	logic [2:0] w_s0;
-	logic w_s1;
-	logic [2:0] w_c0;
-	logic [1:0] w_c1;
-	logic w_c2;
+	wire [2:0] w_s0;
+	wire w_s1;
+	wire [2:0] w_c0;
+	wire [1:0] w_c1;
+	wire w_c2;
 		
 	fulladder U0_0(in[0], in[1], in[2], w_s0[0], w_c0[0]);
 	fulladder U0_1(in[3], in[4], in[5], w_s0[1], w_c0[1]);
@@ -296,16 +294,16 @@ endmodule
 
 module adder_9_4
 	(
-		input logic [8:0]in,
-		output logic [3:0] out
+		input  [8:0]in,
+		output [3:0] out
 	);
 	
 	//wallace tree
-	logic [2:0] w_s0;
-	logic w_s1;
-	logic [2:0] w_c0;
-	logic [1:0] w_c1;
-	logic w_c2;
+	wire [2:0] w_s0;
+	wire w_s1;
+	wire [2:0] w_c0;
+	wire [1:0] w_c1;
+	wire w_c2;
 		
 	fulladder U0_0(in[0], in[1], in[2], w_s0[0], w_c0[0]);
 	fulladder U0_1(in[3], in[4], in[5], w_s0[1], w_c0[1]);

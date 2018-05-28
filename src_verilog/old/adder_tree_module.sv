@@ -75,7 +75,7 @@ module adder_tree_module
     integer j, initi = 32'hFFFFFFFF;
     //register set
     initial begin
-        $readmemb("D:/OneDrive - kw.ac.kr/0. Git/automo_pc/src/init.mem", mem_coeff);
+        $readmemb("C:/altera/projects/power_emulator_25/src/init.mem", mem_coeff);
         /*
         for(j=0;j<CGES;j=j+1) begin
             mem_coeff[j] <= initi;

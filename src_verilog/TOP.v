@@ -1,17 +1,3 @@
-`include "../src/adder_tree_module.sv"
-`include "../src/CPA_module.sv"
-`include "../src/m_control.sv"
-`include "../src/temp_target_IP.sv"
-
-//CPA module option
-//SRC_INC_RCA - RCA
-//SRC_INC_CLA - CLA
-//SRC_INC_PPA_KS - Kogge - Stone adder
-//SRC_INC_PPA_LF - Lander - Fisher adder
-//Default - operation +
-
-`define SRC_INC_PPA_LF
-
 module TOP
 	#(
 		parameter BITS = 'd32, //user accuracy
@@ -25,24 +11,24 @@ module TOP
 		output [3+BITS:0] result
 	);
 	//localparam CGES = 'd13;
-	localparam MAX  = $clog2(CGES) + BITS ;
+	localparam MAX  = 4 + 32 ;
 	//localparam MAX  = 35;
 	localparam INPUT = 'd7;
 	
-	logic cal;
+	wire wen;
 	
-	logic [MAX-'d1:0] vs;
-	logic [MAX-'d1:0] vc;
+	wire [MAX-'d1:0] vs;
+	wire [MAX-'d1:0] vc;
 	
-	logic [CGES-'d2:0] cges;
-	logic [MAX-'d1:0] cpa_result;
+	wire [CGES-'d2:0] cges;
+	wire [MAX-'d1:0] cpa_result;
 	
 	 adder_tree_module #(BITS,CGES,MAX,INPUT)
 		U1_CSA
     (
         clk,
         reset_n,
-        cal,
+        wen,
         cges,
         vs,
         vc
@@ -60,7 +46,7 @@ module TOP
 	(
 		clk, 
 		reset_n, 
-		cal, 
+		wen, 
 		cpa_result, 
 		result
 	); 
@@ -72,16 +58,16 @@ module TOP
 		clk,  
 		reset_n,
 		start, fin,
-		cal
+		wen
 	);
 	
 	
-	temp_target_IP#(CGES)
+	temp_target_IP 	#(CGES)
 	U0_targetIP
 	(
 		clk, 
 		reset_n,
-      cges
+      	cges
 	);
 	
 	

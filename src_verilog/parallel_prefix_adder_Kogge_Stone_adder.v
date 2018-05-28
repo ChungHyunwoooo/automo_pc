@@ -1,28 +1,21 @@
-
-
-`ifndef PARALLEL_PREFIX_ADDER_CELL
-`define PARALLEL_PREFIX_ADDER_CELL
-`include "./parallel_prefix_adder_cell.sv"
-`endif
-
 // Support bitwidth: 1~128 bits
 module parallel_prefix_adder_Kogge_Stone_adder
     #(
         parameter BITS='d8
     )
     (
-        input   logic [BITS-'d1:'d0] a,
-        input   logic [BITS-'d1:'d0] b,
-        input   logic ci,
-        output  logic [BITS-'d1:'d0] s,
-        output  logic co
+        input    [BITS-'d1:'d0] a,
+        input    [BITS-'d1:'d0] b,
+        input    ci,
+        output  wire [BITS-'d1:'d0] s,
+        output  wire co
     );
 
     localparam LOGIC_DEPTH = $clog2(BITS);
 
-    logic [BITS-'d1:'d0] c_a; // Alive carry-in
-    logic [BITS-'d1:'d0] c_p; // Propagate carry-in
-    logic [BITS-'d1:'d0] c_g; // Generate carry-out 
+    wire [BITS-'d1:'d0] c_a; // Alive carry-in
+    wire [BITS-'d1:'d0] c_p; // Propagate carry-in
+    wire [BITS-'d1:'d0] c_g; // Generate carry-out 
 
     assign c_a = a | b; 
     assign c_p = a ^ b;
@@ -34,20 +27,20 @@ module parallel_prefix_adder_Kogge_Stone_adder
 
     generate
         assign s[0] = c_p[0] ^ ci;
-        logic [BITS-1:0] lv1_g;
-        logic [BITS-1:0] lv1_a;
-        logic [BITS-1:0] lv2_g;
-        logic [BITS-1:0] lv2_a;
-        logic [BITS-1:0] lv3_g;
-        logic [BITS-1:0] lv3_a;    
-        logic [BITS-1:0] lv4_g;
-        logic [BITS-1:0] lv4_a;    
-        logic [BITS-1:0] lv5_g;
-        logic [BITS-1:0] lv5_a;
-        logic [BITS-1:0] lv6_g;
-        logic [BITS-1:0] lv6_a;
-        logic [BITS-1:0] lv7_g;
-        logic [BITS-1:0] lv7_a;
+        wire [BITS-1:0] lv1_g;
+        wire [BITS-1:0] lv1_a;
+        wire [BITS-1:0] lv2_g;
+        wire [BITS-1:0] lv2_a;
+        wire [BITS-1:0] lv3_g;
+        wire [BITS-1:0] lv3_a;    
+        wire [BITS-1:0] lv4_g;
+        wire [BITS-1:0] lv4_a;    
+        wire [BITS-1:0] lv5_g;
+        wire [BITS-1:0] lv5_a;
+        wire [BITS-1:0] lv6_g;
+        wire [BITS-1:0] lv6_a;
+        wire [BITS-1:0] lv7_g;
+        wire [BITS-1:0] lv7_a;
 
         // Carry out
         if(BITS==1)begin

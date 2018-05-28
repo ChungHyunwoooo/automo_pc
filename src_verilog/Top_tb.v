@@ -95,11 +95,11 @@ initial begin
 end
 */
 
-logic clk, reset_n;
-logic s_read, s_write;
-logic [1:0] s_addr;
-logic [31:0] s_wdata;
-logic [31:0] s_rdata;
+reg clk, reset_n;
+reg s_read, s_write;
+reg [3:0] s_addr;
+reg [31:0] s_wdata;
+wire [31:0] s_rdata;
 
 power_emulator_ip a
    (
@@ -110,16 +110,15 @@ power_emulator_ip a
        s_rdata
    );
 
-int i,j;
+integer i,j;
 always begin #5; clk = ~clk; end 
 
 initial begin
 	clk = 1; reset_n = 1; s_addr = 0; s_write = 1; #10;
 	reset_n = 0; s_read = 1; #10;
 	s_addr = 0; s_wdata = 1; #10;
-	for(j=0;j<10;j=j+1)begin
-	s_addr = 2; #10;
-	s_addr = 3; #10;
+	for(j=0;j<16 * 10;j=j+1)begin
+	s_addr = j; #10;
 	end
 	$stop;
 end
